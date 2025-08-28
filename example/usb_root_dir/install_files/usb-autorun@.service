@@ -1,0 +1,18 @@
+[Unit]
+Description=USB autorun service for %i
+DefaultDependencies=false
+Requires=systemd-udevd.service
+After=systemd-udevd.service
+
+[Service]
+Type=oneshot
+Environment="DEVICE=%i"
+ExecStart=mkdir -p /tmp/usb-%i
+ExecStart=mount /dev/%i /tmp/usb-%i
+ExecStart=/tmp/usb-%i/auto_run.sh /tmp/usb-%i
+ExecStop=umount /tmp/usb-%i
+ExecStop=rm -rf /tmp/usb-%i
+ExecStop=busctl emit /com/atlas/IPKExtractor com.atlas.IPKExtractor IPKInfoExtracted "s" "[]"
+TimeoutSec=30
+RemainAfterExit=true
+

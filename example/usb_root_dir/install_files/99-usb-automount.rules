@@ -1,0 +1,9 @@
+# /etc/udev/rules.d/99-usb-systemd.rules
+# USB 저장장치 파티션 감지 (예: sda1, sdb1)
+ACTION=="add", SUBSYSTEM=="block", KERNEL=="sd[a-z][0-9]*", ENV{ID_BUS}=="usb", ENV{ID_FS_TYPE}!="", TAG+="systemd", ENV{SYSTEMD_WANTS}="usb-autorun@%k.service"
+
+# USB 디스크 전체에 파일시스템이 있는 경우 (파티션 없음, 예: sda)
+ACTION=="add", SUBSYSTEM=="block", KERNEL=="sd[a-z]", ENV{ID_BUS}=="usb", ENV{DEVTYPE}=="disk", ENV{ID_FS_TYPE}!="", TAG+="systemd", ENV{SYSTEMD_WANTS}="usb-autorun@%k.service"
+
+# USB 저장장치 제거
+ACTION=="remove", SUBSYSTEM=="block", KERNEL=="sd[a-z]*", ENV{ID_BUS}=="usb", RUN+="/bin/systemctl stop usb-autorun@%k.service"

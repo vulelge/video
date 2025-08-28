@@ -1,0 +1,2 @@
+# Monitor D-Bus signals using busctl
+busctl monitor --system --match="type='signal',interface='com.atlas.IPKExtractor',member='IPKInfoExtracted'"
